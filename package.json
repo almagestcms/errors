@@ -1,6 +1,6 @@
 {
   "name": "@almagestcms/errors",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Errors for Almagest CMS",
   "main": "index.js",
   "scripts": {

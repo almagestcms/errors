@@ -1,8 +1,8 @@
 class AlmagestCMSError extends Error {
   constructor(
     message,
-    statusCode,
-    extensions,
+    code,
+    data,
   ) {
     super(message);
 
@@ -13,14 +13,14 @@ class AlmagestCMSError extends Error {
         enumerable: true,
         writable: true,
       },
-      statusCode: {
-        value: statusCode || 500,
+      code: {
+        value: code || 500,
         enumerable: true,
         writable: true,
       },
-      extensions: {
-        value: extensions ?? undefined,
-        enumerable: extensions != null,
+      data: {
+        value: data ?? undefined,
+        enumerable: data != null,
       },
     });
 
@@ -35,17 +35,39 @@ class AlmagestCMSError extends Error {
       });
     }
   }
+
+  toJSON() {
+    return {
+      message: this.message,
+      code: this.code,
+      data: this.data,
+      stack: this.stack,
+    }
+  }
 }
 
 class BadGatewayError extends AlmagestCMSError {
   constructor(
     message = 'Bad Gateway',
-    extensions,
+    data,
   ) {
     super(
       message,
       502,
-      { ...extensions, code: 'BAD_GATEWAY' },
+      data,
+    );
+  }
+}
+
+class GatewayTimeoutError extends AlmagestCMSError {
+  constructor(
+    message = 'Gateway Timeout',
+    data,
+  ) {
+    super(
+      message,
+      504,
+      data,
     );
   }
 }
@@ -53,12 +75,12 @@ class BadGatewayError extends AlmagestCMSError {
 class BadRequestError extends AlmagestCMSError {
   constructor(
     message = 'Bad Request',
-    extensions,
+    data,
   ) {
     super(
       message,
       400,
-      { ...extensions, code: 'BAD_REQUEST' },
+      data,
     );
   }
 }
@@ -66,25 +88,25 @@ class BadRequestError extends AlmagestCMSError {
 class ConflictError extends AlmagestCMSError {
   constructor(
     message = 'Conflict',
-    extensions,
+    data,
   ) {
     super(
       message,
       409,
-      { ...extensions, code: 'CONFLICT' },
+      data,
     );
   }
 }
 
 class InternalError extends AlmagestCMSError {
   constructor(
-    message = 'Internal Server Error',
-    extensions,
+    message = 'Internal Error',
+    data,
   ) {
     super(
       message,
       500,
-      { ...extensions, code: 'INTERNAL' },
+      data,
     );
   }
 }
@@ -92,7 +114,7 @@ class InternalError extends AlmagestCMSError {
 class NotFoundError extends AlmagestCMSError {
   constructor(
     message = 'Not Found',
-    extensions,
+    data,
   ) {
     if (typeof message === 'object') {
       const { resourceTypeName, propertyMap } = message;
@@ -106,20 +128,7 @@ class NotFoundError extends AlmagestCMSError {
     super(
       message,
       404,
-      { ...extensions, code: 'NOT_FOUND' },
-    );
-  }
-}
-
-class ServiceUnavailableError extends AlmagestCMSError {
-  constructor(
-    message = 'Service Unavailable',
-    extensions,
-  ) {
-    super(
-      message,
-      503,
-      { ...extensions, code: 'SERVICE_UNAVAILABLE' },
+      data,
     );
   }
 }
@@ -127,23 +136,23 @@ class ServiceUnavailableError extends AlmagestCMSError {
 class UnauthorizedError extends AlmagestCMSError {
   constructor(
     message = 'Unauthorized',
-    extensions,
+    data,
   ) {
     super(
       message,
       403,
-      { ...extensions, code: 'UNAUTHORIZED' },
+      data,
     );
   }
 }
 
-return {
+module.exports = {
   AlmagestCMSError,
   BadGatewayError,
+  GatewayTimeoutError,
   BadRequestError,
   ConflictError,
   InternalError,
   NotFoundError,
-  ServiceUnavailableError,
   UnauthorizedError
 }
