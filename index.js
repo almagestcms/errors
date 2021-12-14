@@ -116,15 +116,6 @@ class NotFoundError extends AlmagestCMSError {
     message = 'Not Found',
     data,
   ) {
-    if (typeof message === 'object') {
-      const { resourceTypeName, propertyMap } = message;
-      if (typeof resourceTypeName !== 'string') throw new Error('Resource type name must be string');
-      if (typeof propertyMap !== 'object') throw new Error('Property map must be object');
-      const propertyString = Object.keys(propertyMap)
-        .filter(key => typeof propertyMap[key] !== 'undefined' && propertyMap[key] !== null)
-        .map(key => `${key}: ${propertyMap[key]}`).join(', ');
-      message = `${resourceTypeName} (${propertyString}) not found.`;
-    }
     super(
       message,
       404,
