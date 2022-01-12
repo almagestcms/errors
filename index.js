@@ -24,15 +24,20 @@ class AlmagestCMSError extends Error {
       },
     });
 
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, AlmagestCMSError);
+    if (data?.originalError?.stack) {
+      this.stack = data.originalError.stack;
     }
     else {
-      Object.defineProperty(this, 'stack', {
-        value: Error().stack,
-        writable: true,
-        configurable: true
-      });
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(this, AlmagestCMSError);
+      }
+      else {
+        Object.defineProperty(this, 'stack', {
+          value: Error().stack,
+          writable: true,
+          configurable: true
+        });
+      }
     }
   }
 
