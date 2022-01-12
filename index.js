@@ -3,6 +3,7 @@ class AlmagestCMSError extends Error {
     message,
     code,
     data,
+    stack,
   ) {
     super(message);
 
@@ -24,8 +25,8 @@ class AlmagestCMSError extends Error {
       },
     });
 
-    if (data?.originalError?.stack) {
-      this.stack = data.originalError.stack;
+    if (stack) {
+      this.stack = stack;
     }
     else {
       if (Error.captureStackTrace) {
@@ -107,11 +108,13 @@ class InternalError extends AlmagestCMSError {
   constructor(
     message = 'Internal Error',
     data,
+    stack,
   ) {
     super(
       message,
       500,
       data,
+      stack,
     );
   }
 }
